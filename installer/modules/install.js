@@ -45,6 +45,10 @@ const files = [
 		`src/theme/single.php`,
 	]
 
+const theCWD = process.cwd();
+const theCWDArray = theCWD.split('/');
+const theDir = theCWDArray[theCWDArray.length - 1];
+
 export function installFromLocal() {
 
 }
@@ -61,4 +65,8 @@ export function installFromUpstream() {
 	}
 
 	const filesToDownload = files.map( ( file ) => `${upstreamUrl}/${file}`)
+
+	await Promise.all(filesToDownload.map((x) => download(x, `${theCWD}`)));
+
+	moveFiles();
 }

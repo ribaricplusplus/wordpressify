@@ -1,3 +1,46 @@
+const dotFiles = [
+	'.babelrc',
+	'.gitignore',
+	'.stylelintrc',
+	'.env.in',
+	'.editorconfig',
+];
+const cssFiles = ['style.css', 'wordpressify.css'];
+const jsFiles = ['main.js'];
+const imgFiles = ['logo.svg'];
+const themeFiles = [
+	'404.php',
+	'archive.php',
+	'comments.php',
+	'content-none.php',
+	'content-page.php',
+	'content-single.php',
+	'content.php',
+	'footer.php',
+	'functions.php',
+	'header.php',
+	'index.php',
+	'page.php',
+	'screenshot.png',
+	'search.php',
+	'searchform.php',
+	'sidebar.php',
+	'single.php',
+];
+const configFiles = ['php.ini.in'];
+const nginxFiles = [
+	'welcome.html',
+	'fastcgi.conf',
+	'mime.types',
+	'nginx.conf',
+];
+const sitesEnabledFiles = ['wordpress'];
+const snippetsFiles = ['fastcgi-php.conf'];
+
+const theCWD = process.cwd();
+const theCWDArray = theCWD.split('/');
+const theDir = theCWDArray[theCWDArray.length - 1];
+
 export default async function moveFiles() {
 	if (!fs.existsSync('src')) {
 		await execa('mkdir', [
