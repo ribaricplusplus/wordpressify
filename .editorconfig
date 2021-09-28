@@ -1,13 +1,11 @@
 root = true
 
 [*]
-quote_type = single
-end_of_line = lf
 charset = utf-8
-trim_trailing_whitespace = true
+end_of_line = lf
 insert_final_newline = true
+trim_trailing_whitespace = true
 indent_style = tab
-indent_size = 1
 
 [*.yml]
 indent_style = space

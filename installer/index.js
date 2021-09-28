@@ -28,7 +28,7 @@ program
 	.option('-l, --local', 'install from local repo')
 	.parse(process.argv);
 
-const options = program.opts()
+const options = program.opts();
 
 (async () => {
 	let response = {};
@@ -42,7 +42,7 @@ const options = program.opts()
 		});
 	}
 
-	if (program.nonInteractive || response.value) {
+	if (options.nonInteractive || response.value) {
 		// If below Node 12
 		if (12 > major) {
 			console.error(
@@ -69,6 +69,6 @@ const options = program.opts()
 		 *
 		 * Runs all the functions with async/await
 		 */
-		run(program);
+		run(options);
 	}
 })();

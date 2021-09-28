@@ -3,6 +3,7 @@
  */
 
 import fs from 'fs';
+import { copyFile } from 'fs/promises';
 import ora from 'ora';
 import execa from 'execa';
 import chalk from 'chalk';
@@ -11,6 +12,7 @@ import { createRequire } from 'module';
 import { handleError } from './handleError.js';
 import { clearConsole } from './clearConsole.js';
 import { printNextSteps } from './printNextSteps.js';
+import moveFiles from './moveFiles';
 
 const require = createRequire(import.meta.url);
 const packageData = require('../package.json');
@@ -25,17 +27,56 @@ const run = (options) => {
 	// Init
 	clearConsole();
 
-	if ( program.local ) {
-		console.log('Hello world!');
-		process.exit(0);
-	} else {
-		console.log(process.argv)
-		process.exit(0);
-		}
+	const files = [
+		`.babelrc`,
+		`.gitignore`,
+		`.stylelintrc`,
+		`.env.in`,
+		`.editorconfig`,
+		`LICENSE`,
+		`README.md`,
+		`gulpfile.js`,
+		`docker-compose.yml`,
+		`Dockerfile.in`,
+		`installer/package.json`,
+
+		`config/php.ini.in`,
+		`config/nginx/welcome.html`,
+		`config/nginx/fastcgi.conf`,
+		`config/nginx/mime.types`,
+		`config/nginx/nginx.conf`,
+		`config/nginx/sites-enabled/wordpress`,
+		`config/nginx/snippets/fastcgi-php.conf`,
+
+		`src/assets/css/style.css`,
+		`src/assets/css/wordpressify.css`,
+
+		`src/assets/js/main.js`,
+
+		`src/assets/img/logo.svg`,
+
+		`src/theme/404.php`,
+		`src/theme/archive.php`,
+		`src/theme/comments.php`,
+		`src/theme/content-none.php`,
+		`src/theme/content-page.php`,
+		`src/theme/content-single.php`,
+		`src/theme/content.php`,
+		`src/theme/footer.php`,
+		`src/theme/functions.php`,
+		`src/theme/header.php`,
+		`src/theme/index.php`,
+		`src/theme/page.php`,
+		`src/theme/screenshot.png`,
+		`src/theme/search.php`,
+		`src/theme/searchform.php`,
+		`src/theme/sidebar.php`,
+		`src/theme/single.php`,
+	];
 
 	let upstreamUrl = '';
-	// When running GitHub actions, make sure the files from current repo are downloaded
 	if (process.env.WPFY_GH_REPO) {
+		// When running GitHub actions, make sure the files from current repo are downloaded
 		let refname = process.env.WPFY_GH_REF.split('/');
 		refname = refname[refname.length - 1];
 		upstreamUrl = `https://raw.githubusercontent.com/${process.env.WPFY_GH_REPO}/${refname}`;
@@ -43,7 +84,6 @@ const run = (options) => {
 		upstreamUrl = `https://raw.githubusercontent.com/luangjokaj/wordpressify/v${version}`;
 	}
 
-	// Files
 	const filesToDownload = [
 		`${upstreamUrl}/.babelrc`,
 		`${upstreamUrl}/.gitignore`,
@@ -153,96 +193,7 @@ const run = (options) => {
 
 	// Download
 	Promise.all(filesToDownload.map((x) => download(x, `${theCWD}`))).then(
-		async () => {
-			if (!fs.existsSync('src')) {
-				await execa('mkdir', [
-					'src',
-					'src/theme',
-					'src/plugins',
-					'src/assets',
-					'src/assets/css',
-					'src/assets/js',
-					'src/assets/img',
-					'config',
-					'config/nginx',
-					'config/nginx/sites-enabled',
-					'config/nginx/snippets',
-				]);
-			}
-
-			dotFiles.map((x) =>
-				fs.rename(`${theCWD}/${x.slice(1)}`, `${theCWD}/${x}`, (err) =>
-					handleError(err)
-				)
-			);
-			cssFiles.map((x) =>
-				fs.rename(
-					`${theCWD}/${x}`,
-					`${theCWD}/src/assets/css/${x}`,
-					(err) => handleError(err)
-				)
-			);
-			jsFiles.map((x) =>
-				fs.rename(
-					`${theCWD}/${x}`,
-					`${theCWD}/src/assets/js/${x}`,
-					(err) => handleError(err)
-				)
-			);
-			imgFiles.map((x) =>
-				fs.rename(
-					`${theCWD}/${x}`,
-					`${theCWD}/src/assets/img/${x}`,
-					(err) => handleError(err)
-				)
-			);
-			themeFiles.map((x) =>
-				fs.rename(`${theCWD}/${x}`, `${theCWD}/src/theme/${x}`, (err) =>
-					handleError(err)
-				)
-			);
-			configFiles.map((x) =>
-				fs.rename(`${theCWD}/${x}`, `${theCWD}/config/${x}`, (err) =>
-					handleError(err)
-				)
-			);
-			nginxFiles.map((x) =>
-				fs.rename(
-					`${theCWD}/${x}`,
-					`${theCWD}/config/nginx/${x}`,
-					(err) => handleError(err)
-				)
-			);
-			sitesEnabledFiles.map((x) =>
-				fs.rename(
-					`${theCWD}/${x}`,
-					`${theCWD}/config/nginx/sites-enabled/${x}`,
-					(err) => handleError(err)
-				)
-			);
-			snippetsFiles.map((x) =>
-				fs.rename(
-					`${theCWD}/${x}`,
-					`${theCWD}/config/nginx/snippets/${x}`,
-					(err) => handleError(err)
-				)
-			);
-			spinner.succeed();
-
-			// The npm install
-			spinner.start('2. Installing npm packages...');
-			await execa('npm', ['install']);
-			spinner.succeed();
-
-			spinner.start(
-				'3. Installing WordPress and building Docker images...'
-			);
-			await execa('npm', ['run', 'env:build']);
-			spinner.succeed();
-
-			// Done
-			printNextSteps();
-		}
+		moveFiles
 	);
 };
 
