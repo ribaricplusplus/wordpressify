@@ -33,63 +33,6 @@ const run = (options) => {
 		installFromUpstream();
 	}
 
-	let upstreamUrl = '';
-	if (process.env.WPFY_GH_REPO) {
-		// When running GitHub actions, make sure the files from current repo are downloaded
-		let refname = process.env.WPFY_GH_REF.split('/');
-		refname = refname[refname.length - 1];
-		upstreamUrl = `https://raw.githubusercontent.com/${process.env.WPFY_GH_REPO}/${refname}`;
-	} else {
-		upstreamUrl = `https://raw.githubusercontent.com/luangjokaj/wordpressify/v${version}`;
-	}
-
-	const filesToDownload = [
-		`${upstreamUrl}/.babelrc`,
-		`${upstreamUrl}/.gitignore`,
-		`${upstreamUrl}/.stylelintrc`,
-		`${upstreamUrl}/.env.in`,
-		`${upstreamUrl}/.editorconfig`,
-		`${upstreamUrl}/LICENSE`,
-		`${upstreamUrl}/README.md`,
-		`${upstreamUrl}/gulpfile.js`,
-		`${upstreamUrl}/docker-compose.yml`,
-		`${upstreamUrl}/Dockerfile.in`,
-		`${upstreamUrl}/installer/package.json`,
-
-		`${upstreamUrl}/config/php.ini.in`,
-		`${upstreamUrl}/config/nginx/welcome.html`,
-		`${upstreamUrl}/config/nginx/fastcgi.conf`,
-		`${upstreamUrl}/config/nginx/mime.types`,
-		`${upstreamUrl}/config/nginx/nginx.conf`,
-		`${upstreamUrl}/config/nginx/sites-enabled/wordpress`,
-		`${upstreamUrl}/config/nginx/snippets/fastcgi-php.conf`,
-
-		`${upstreamUrl}/src/assets/css/style.css`,
-		`${upstreamUrl}/src/assets/css/wordpressify.css`,
-
-		`${upstreamUrl}/src/assets/js/main.js`,
-
-		`${upstreamUrl}/src/assets/img/logo.svg`,
-
-		`${upstreamUrl}/src/theme/404.php`,
-		`${upstreamUrl}/src/theme/archive.php`,
-		`${upstreamUrl}/src/theme/comments.php`,
-		`${upstreamUrl}/src/theme/content-none.php`,
-		`${upstreamUrl}/src/theme/content-page.php`,
-		`${upstreamUrl}/src/theme/content-single.php`,
-		`${upstreamUrl}/src/theme/content.php`,
-		`${upstreamUrl}/src/theme/footer.php`,
-		`${upstreamUrl}/src/theme/functions.php`,
-		`${upstreamUrl}/src/theme/header.php`,
-		`${upstreamUrl}/src/theme/index.php`,
-		`${upstreamUrl}/src/theme/page.php`,
-		`${upstreamUrl}/src/theme/screenshot.png`,
-		`${upstreamUrl}/src/theme/search.php`,
-		`${upstreamUrl}/src/theme/searchform.php`,
-		`${upstreamUrl}/src/theme/sidebar.php`,
-		`${upstreamUrl}/src/theme/single.php`,
-	];
-
 	// Organise file structure
 	const dotFiles = [
 		'.babelrc',

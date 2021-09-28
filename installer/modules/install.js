@@ -50,5 +50,15 @@ export function installFromLocal() {
 }
 
 export function installFromUpstream() {
+	let upstreamUrl = '';
+	if (process.env.WPFY_GH_REPO) {
+		// When running GitHub actions, make sure the files from current repo are downloaded
+		let refname = process.env.WPFY_GH_REF.split('/');
+		refname = refname[refname.length - 1];
+		upstreamUrl = `https://raw.githubusercontent.com/${process.env.WPFY_GH_REPO}/${refname}`;
+	} else {
+		upstreamUrl = `https://raw.githubusercontent.com/luangjokaj/wordpressify/v${version}`;
+	}
 
+	const filesToDownload = files.map( ( file ) => `${upstreamUrl}/${file}`)
 }
