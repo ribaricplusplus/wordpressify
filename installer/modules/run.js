@@ -12,7 +12,7 @@ import { createRequire } from 'module';
 import { handleError } from './handleError.js';
 import { clearConsole } from './clearConsole.js';
 import { printNextSteps } from './printNextSteps.js';
-import moveFiles from './moveFiles';
+import { installFromLocal, installFromUpstream } from './install.js'
 
 const require = createRequire(import.meta.url);
 const packageData = require('../package.json');
@@ -27,52 +27,11 @@ const run = (options) => {
 	// Init
 	clearConsole();
 
-	const files = [
-		`.babelrc`,
-		`.gitignore`,
-		`.stylelintrc`,
-		`.env.in`,
-		`.editorconfig`,
-		`LICENSE`,
-		`README.md`,
-		`gulpfile.js`,
-		`docker-compose.yml`,
-		`Dockerfile.in`,
-		`installer/package.json`,
-
-		`config/php.ini.in`,
-		`config/nginx/welcome.html`,
-		`config/nginx/fastcgi.conf`,
-		`config/nginx/mime.types`,
-		`config/nginx/nginx.conf`,
-		`config/nginx/sites-enabled/wordpress`,
-		`config/nginx/snippets/fastcgi-php.conf`,
-
-		`src/assets/css/style.css`,
-		`src/assets/css/wordpressify.css`,
-
-		`src/assets/js/main.js`,
-
-		`src/assets/img/logo.svg`,
-
-		`src/theme/404.php`,
-		`src/theme/archive.php`,
-		`src/theme/comments.php`,
-		`src/theme/content-none.php`,
-		`src/theme/content-page.php`,
-		`src/theme/content-single.php`,
-		`src/theme/content.php`,
-		`src/theme/footer.php`,
-		`src/theme/functions.php`,
-		`src/theme/header.php`,
-		`src/theme/index.php`,
-		`src/theme/page.php`,
-		`src/theme/screenshot.png`,
-		`src/theme/search.php`,
-		`src/theme/searchform.php`,
-		`src/theme/sidebar.php`,
-		`src/theme/single.php`,
-	];
+	if (options.local) {
+		installFromLocal();
+	} else {
+		installFromUpstream();
+	}
 
 	let upstreamUrl = '';
 	if (process.env.WPFY_GH_REPO) {
