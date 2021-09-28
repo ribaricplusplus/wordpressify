@@ -21,9 +21,17 @@ const theCWD = process.cwd();
 const theCWDArray = theCWD.split('/');
 const theDir = theCWDArray[theCWDArray.length - 1];
 
-const run = () => {
+const run = (options) => {
 	// Init
 	clearConsole();
+
+	if ( program.local ) {
+		console.log('Hello world!');
+		process.exit(0);
+	} else {
+		console.log(process.argv)
+		process.exit(0);
+		}
 
 	let upstreamUrl = '';
 	// When running GitHub actions, make sure the files from current repo are downloaded

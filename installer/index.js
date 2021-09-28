@@ -25,11 +25,14 @@ const major = semver[0];
 program
 	.version(version, '-v, --vers', 'output the current version')
 	.option('-y, --non-interactive', 'do not prompt for user input')
+	.option('-l, --local', 'install from local repo')
 	.parse(process.argv);
+
+const options = program.opts()
 
 (async () => {
 	let response = {};
-	if (!program.nonInteractive) {
+	if (!options.nonInteractive) {
 		response = await prompts({
 			type: 'confirm',
 			name: 'value',
@@ -66,6 +69,6 @@ program
 		 *
 		 * Runs all the functions with async/await
 		 */
-		run();
+		run(program);
 	}
 })();
