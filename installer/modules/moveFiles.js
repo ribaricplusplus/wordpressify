@@ -1,3 +1,5 @@
+import { handleError } from './handleError.js';
+
 const dotFiles = [
 	'.babelrc',
 	'.gitignore',
@@ -36,14 +38,13 @@ const nginxFiles = [
 ];
 const sitesEnabledFiles = ['wordpress'];
 const snippetsFiles = ['fastcgi-php.conf'];
+const moveSpec = [
+]
 
 const theCWD = process.cwd();
-const theCWDArray = theCWD.split('/');
-const theDir = theCWDArray[theCWDArray.length - 1];
 
-export default async function moveFiles() {
-	if (!fs.existsSync('src')) {
-		await execa('mkdir', [
+export default async function moveFiles(options) {
+	let dirs = [
 			'src',
 			'src/theme',
 			'src/plugins',
@@ -55,7 +56,14 @@ export default async function moveFiles() {
 			'config/nginx',
 			'config/nginx/sites-enabled',
 			'config/nginx/snippets',
-		]);
+		]
+
+	if ( options.local ) {
+		dirs = dirs.map( (dir) => `local-install/${dir}` )
+	}
+
+	if (!fs.existsSync(dirs[0])) {
+		await execa('mkdir', dirs);
 	}
 
 	dotFiles.forEach((x) =>
